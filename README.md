@@ -30,7 +30,14 @@ docker compose up -d --build
 ```
 
 2. Access MLflow UI with http://localhost:5001
-3. Access MinIO UI with http://localhost:9000, login with credentials passed used in the `docker-compose.yml`
+3. Access MinIO UI with http://localhost:9000*
+4. Next start a training job within the `mlflow_server` container using the [cli](https://mlflow.org/docs/latest/cli.html#mlflow-run):
+
+```shell
+docker exec mlflow_server mlflow run https://github.com/mlflow/mlflow-example.git -P alpha=0.42
+```
+
+`*` Login with credentials used in `docker-compose.yml`.
 
 > [!NOTE]
 >
