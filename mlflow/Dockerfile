@@ -15,5 +15,8 @@ RUN pip install -r /tmp/requirements.txt \
     && bash ~/miniconda.sh -p /miniconda -b \
     && rm ~/miniconda.sh
 ENV PATH=/miniconda/bin:${PATH}
-# RUN conda install -y -c conda-forge libstdcxx-ng
-# RUN conda install -y -c conda-forge gxx_linux-64
+# Resolve issue related to /lib/x86_64-linux-gnu/libstdc++.so.6: version 'GLIBCXX_3.4.29' not found
+# Solution as per: https://github.com/pybind/pybind11/discussions/3453#discussioncomment-7068951
+RUN conda install -y -c conda-forge libstdcxx-ng \
+    && rm /usr/lib/x86_64-linux-gnu/libstdc++.so.6 \
+    && cp miniconda/lib/libstdc++.so.6 /usr/lib/x86_64-linux-gnu/
