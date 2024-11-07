@@ -4,7 +4,16 @@ services:
     build: ./mlflow
     image: mlflow_server
     container_name: mlflow_server
-    command: mlflow server --backend-store-uri postgresql+psycopg2://postgres:postgres@postgres:5432/mlflow_db --host 0.0.0.0 -p 5001
+    command: >
+      mlflow server --default-artifact-root /mlartifacts
+      --backend-store-uri postgresql+psycopg2://postgres:postgres@postgres:5432/mlflow_db
+      --host 0.0.0.0
+      -p 5001
+    environment:
+      # https://mlflow.org/docs/latest/python_api/mlflow.environment_variables.html#
+      MLFLOW_TRACKING_URI: http://localhost:5001
+    volumes:
+      - "./mlartifacts:/mlartifacts"
     ports:
       - "5001:5001"
     depends_on:
