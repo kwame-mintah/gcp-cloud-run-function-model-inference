@@ -18,7 +18,7 @@ app = FastAPI()
 )
 async def predict(data: List[WineQualityData]) -> List[float]:
     """
-    predict the quality of wine based on quantitative features
+    Predict the quality of wine based on quantitative features
     like the wines “fixed acidity”, “pH”, “residual sugar”, and so on.
 
     :param data: list of different wine qualities
