@@ -19,9 +19,9 @@ and overall easy to use and maintain.
 # Training using MLflow
 
 As with all machine learning projects, your milage may vary (YMMV). This project will re-use existing data set for
-modeling wine preferences using [mlflow-example](https://github.com/mlflow/mlflow-example) for demonstration. The provided
-`docker-compose.yml` file will create the necessary resources needed to train locally. The following steps below will
-start the services:
+[wine quality](https://archive.ics.uci.edu/dataset/186/wine+quality) using [mlflow-example](https://github.com/mlflow/mlflow-example)
+for demonstration. The provided `docker-compose.yml` file will create the necessary resources needed to train locally.
+The following steps below will start the services:
 
 1. Start mflow server, postgres and minio:
 
@@ -37,6 +37,10 @@ docker compose up -d --build
 docker exec mlflow_server mlflow run https://github.com/mlflow/mlflow-example.git -P alpha=0.42
 ```
 
+5. Once training has started, you should be able to view the run under 'Experiments' tab in MLflow UI
+6. You can download the `model.pkl` using the UI under 'Artifacts' tab, but should be available locally under `/mlartifacts/`
+7. Copy the model artifact `model.pkl` to the root directory of the project ready to be used locally in FastAPI
+
 `*` Login with credentials used in `docker-compose.yml`.
 
 > [!NOTE]
@@ -44,6 +48,45 @@ docker exec mlflow_server mlflow run https://github.com/mlflow/mlflow-example.gi
 > Because the MLflow is a custom docker image, passing `--build` arg will cause the docker image to be re-built each time
 > which is helpful when amending the `.mlflow/requirements.txt`. A re-build is not needed each time, if there is no changes
 > being made to the file and `---build` can be omitted from the command.
+
+# Prediction with FastAPI
+
+The application exposes  a single `/predict/*` endpoint, which allows the user to send a list of various quantitative
+features needed to predict the wine quality. An example payload for predicting wine quality for one wine can be found below:
+
+```json
+[
+  {
+    "alcohol": 12.8,
+    "chlorides": 0.029,
+    "citric acid": 0.48,
+    "density": 0.98,
+    "fixed acidity": 6.2,
+    "free sulfur dioxide": 29,
+    "pH": 3.33,
+    "residual sugar": 1.2,
+    "sulphates": 0.39,
+    "total sulfur dioxide": 75,
+    "volatile acidity": 0.66
+  }
+]
+```
+
+## Running FastAPI
+
+1. Install python packages used for the service:
+
+   ```shell
+   pip install -r requirements.txt
+   ```
+
+2. Run the FastAPI server, which will start on port 8000:
+
+   ```shell
+   python main.py
+   ```
+
+   Endpoint documentation is available on: http://127.0.0.1:8000/docs
 
 # References
 
