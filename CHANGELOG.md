@@ -1,3 +1,9 @@
+## v0.2.0 (2024-11-08)
+
+### Feat
+
+- **download_blob_and_return_object**: new function to download model artifact from bucket
+
 ## v0.1.1 (2024-11-08)
 
 ### Refactor
