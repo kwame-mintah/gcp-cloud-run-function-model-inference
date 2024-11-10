@@ -15,6 +15,10 @@ RUN pip install --no-build-isolation --no-cache-dir --upgrade -r /code/requireme
 # Copy application code to `/code/app/`
 COPY . /code
 
+# Copy the service account credentials with role `roles/storage.objectViewer`
+ARG PREDICTION_SERVICE_ACCOUNT_CREDENTIALS
+ENV GOOGLE_APPLICATION_CREDENTIALS="/code/${PREDICTION_SERVICE_ACCOUNT_CREDENTIALS}"
+
 # Don't run application as root, instead user called `nobody`
 RUN chown -R nobody /code
 
