@@ -1,4 +1,4 @@
-# Google Platform Cloud (GCP) Function Model Inference
+# Google Cloud Platform (GCP) Cloud Run Function Model Inference
 
 A cloud function to invoke a prediction against a machine learning model that has been trained outside
 of a cloud provider, using tools like [MLFlow](https://mlflow.org/). This repository will not contain
@@ -49,6 +49,30 @@ docker exec mlflow_server mlflow run https://github.com/mlflow/mlflow-example.gi
 > which is helpful when amending the `.mlflow/requirements.txt`. A re-build is not needed each time, if there is no changes
 > being made to the file and `---build` can be omitted from the command.
 
+## Running FastAPI
+
+The following environment variables need to be set before attempting to run the application:
+
+| Environment variable name             | Description                                                                 | Default | Required |
+|---------------------------------------|-----------------------------------------------------------------------------|---------|----------|
+| GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME | The GCP bucket name, where the model artifact has been uploaded             | N/A     | Yes      |
+| USE_LOCAL_FILE_PATH_MODEL             | Use the model artifact found locally, rather than fetching from GCP bucket. | False   | No       |
+
+
+1. Install python packages used for the service:
+
+   ```shell
+   pip install -r requirements.txt
+   ```
+
+2. Run the FastAPI server, which will start on port 8000:
+
+   ```shell
+   python main.py
+   ```
+
+   Endpoint documentation is available on: http://127.0.0.1:8000/docs
+
 # Prediction with FastAPI
 
 The application exposes  a single `/predict/*` endpoint, which allows the user to send a list of various quantitative
@@ -71,22 +95,6 @@ features needed to predict the wine quality. An example payload for predicting w
   }
 ]
 ```
-
-## Running FastAPI
-
-1. Install python packages used for the service:
-
-   ```shell
-   pip install -r requirements.txt
-   ```
-
-2. Run the FastAPI server, which will start on port 8000:
-
-   ```shell
-   python main.py
-   ```
-
-   Endpoint documentation is available on: http://127.0.0.1:8000/docs
 
 # References
 
