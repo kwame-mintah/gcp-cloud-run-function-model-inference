@@ -1,0 +1,49 @@
+name: "🚀 Push Docker image to GCP Artifact Registry"
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "CHANGELOG.md"
+
+env:
+  PROJECT_ID: "${{ vars.GCP_PROJECT_ID }}"
+  REGION: "${{ vars.GCP_REGION }}"
+  REGISTRY_REPOSITORY_NAME: "${{ vars.GCP_REGISTRY_REPOSITORY_NAME }}"
+  DOCKER_IMAGE_LOCATION: "${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_REGISTRY_REPOSITORY_NAME }}/gcp-cloud-run-function-model-inference"
+
+jobs:
+  build-push-artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+
+      - name: "Configure GitHub service account"
+        id: "auth"
+        uses: "google-github-actions/auth@v2.1.7"
+        with:
+          credentials_json: "${{ secrets.GCP_GITHUB_SERVICE_ACCOUNT_KEY }}"
+
+      - name: "Set up GCloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2.1.2"
+
+      - name: "Use GCloud CLI"
+        run: "gcloud info"
+
+      - name: "Configure Docker auth"
+        run: |-
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: "Latest semantic versioning tag"
+        id: "semver-version"
+        run: echo "TAG_NAME=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: "Build image"
+        run: docker build -t ${{ env.DOCKER_IMAGE_LOCATION }}:${{ steps.semver-version.outputs.TAG_NAME }}  .
+
+      - name: "Push image"
+        run: docker push ${{ env.DOCKER_IMAGE_LOCATION }}:${{ steps.semver-version.outputs.TAG_NAME }}
