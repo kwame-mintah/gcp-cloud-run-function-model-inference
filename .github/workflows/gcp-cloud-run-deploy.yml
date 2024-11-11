@@ -1,0 +1,48 @@
+name: "🛸 GCP Cloud Run Deloy"
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: "${{ vars.GCP_PROJECT_ID }}"
+  REGION: "${{ vars.GCP_REGION }}"
+  REGISTRY_REPOSITORY_NAME: "${{ vars.GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME }}"
+  MLFLOW_MODEL_ARTIFACT_BUCKET_NAME: "${{ vars.GCP_REGISTRY_REPOSITORY_NAME }}"
+  DOCKER_IMAGE_LOCATION: "${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_REGISTRY_REPOSITORY_NAME }}/gcp-cloud-run-function-model-inference"
+
+jobs:
+  cloud-run-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Configure GitHub service account"
+        id: "auth"
+        uses: "google-github-actions/auth@v2.1.7"
+        with:
+          credentials_json: "${{ secrets.GCP_GITHUB_SERVICE_ACCOUNT_KEY }}"
+
+      - name: "Set up GCloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2.1.2"
+
+      - name: "Use GCloud CLI"
+        run: "gcloud info"
+
+      - name: "Configure Docker auth"
+        run: |-
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: "Latest semantic versioning tag"
+        id: "semver-version"
+        run: echo "TAG_NAME=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: "Deploy cloud run function"
+        run: |-
+          gcloud run deploy gcp-cloud-run-function-model-inference \
+            --image ${{ env.DOCKER_IMAGE_LOCATION }}:${{ steps.semver-version.outputs.TAG_NAME }} \
+            --allow-unauthenticated \
+            --region ${{ env.REGION }} \
+            --port 8080 \
+            --set-env-vars "GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME=${{ env.MLFLOW_MODEL_ARTIFACT_BUCKET_NAME }}" \
+            --labels="github-action-provisioned=true"
