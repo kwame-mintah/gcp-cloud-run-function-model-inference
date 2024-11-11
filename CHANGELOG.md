@@ -1,3 +1,9 @@
+## v0.2.1 (2024-11-11)
+
+### Refactor
+
+- **app**: add endpoint metadata
+
 ## v0.2.0 (2024-11-08)
 
 ### Feat
