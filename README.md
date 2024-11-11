@@ -1,17 +1,22 @@
 # Google Cloud Platform (GCP) Cloud Run Function Model Inference
 
+[![🚧 Bump version](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/run-version-bump.yml/badge.svg)](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/run-version-bump.yml)
+[![🚀 Push Docker image to GCP Artifact Registry](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/gcp-docker-build-and-push.yml/badge.svg)](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/gcp-docker-build-and-push.yml)
+[![🛸 GCP Cloud Run Deploy](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/gcp-cloud-run-deploy.yml/badge.svg)](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/gcp-cloud-run-deploy.yml)
+
 A cloud function to invoke a prediction against a machine learning model that has been trained outside
-of a cloud provider, using tools like [MLFlow](https://mlflow.org/). This repository will not contain
-the model artifact output, but the code for the cloud function.
+a cloud provider, using tools like [MLFlow](https://mlflow.org/). This repository will not contain the model artifact output,
+but the code for the cloud function.
 
 FastAPI will be used for the cloud function as it offers many features e.g. authentication, body validation etc.
-and overall easy to use and maintain.
+and overall easy to use and maintain. Note all GCP resources are created within this repository, some resources are created
+via Terraform in this repository [terraform-gcp-model-serving](https://github.com/kwame-mintah/terraform-gcp-model-serving).
 
 # Architecture
 
 ![proposed-model-inference-architecture](./docs/drawio/cloud-function-model-inference-overview.png)
 
-1. External to GCP model training is performed and model artifact output,
+1. Machine learning model is trained outside GCP and model artifact output created,
 2. User makes a request to a HTTP endpoint for a prediction,
 3. Model artifact is stored within a bucket, when function is invoked -- model is downloaded,
 4. Prediction is output via a HTTP response.
@@ -23,7 +28,7 @@ As with all machine learning projects, your milage may vary (YMMV). This project
 for demonstration. The provided `docker-compose.yml` file will create the necessary resources needed to train locally.
 The following steps below will start the services:
 
-1. Start mflow server, postgres and minio:
+1. Start mlflow server, postgres and minio:
 
 ```shell
 docker compose up -d --build
@@ -44,7 +49,6 @@ docker exec mlflow_server mlflow run https://github.com/mlflow/mlflow-example.gi
 `*` Login with credentials used in `docker-compose.yml`.
 
 > [!NOTE]
->
 > Because the MLflow is a custom docker image, passing `--build` arg will cause the docker image to be re-built each time
 > which is helpful when amending the `.mlflow/requirements.txt`. A re-build is not needed each time, if there is no changes
 > being made to the file and `---build` can be omitted from the command.
@@ -95,6 +99,40 @@ features needed to predict the wine quality. An example payload for predicting w
   }
 ]
 ```
+
+Which will return an HTTP 200 Successful and a score e.g. `[3.6182495833379846]`.
+
+## GitHub Action (CI/CD)
+
+The GitHub Action "🚀 Push Docker image to GCP Artifact Registry" will check out the repository and push a docker image
+to the chosen GCP Artifact Registry using [setup-gcloud](https://github.com/google-github-actions/setup-gcloud/tree/v2.1.2) action.
+The following repository secrets need to be set:
+
+| Secret                                    | Description                                                            |
+|-------------------------------------------|------------------------------------------------------------------------|
+| GCP_GITHUB_SERVICE_ACCOUNT_KEY            | The json private key for the GitHub service account                    |
+| GCP_PREDICTION_SERVICE_ACCOUNT_KEY_BASE64 | The json private key base64 encoded for the prediction service account |
+
+> [!IMPORTANT]
+> The `GCP_PREDICTION_SERVICE_ACCOUNT_KEY_BASE64` must be base64 encoded this can be done with the following command e.g.
+> `base64 -i <service_account>.json -o prediction_service_account.base64`. During the workflow run this will be decoded
+> and used as part of the docker image build.
+
+Additionally, the following variables need to be set:
+
+| Secret                       | Description                           |
+|------------------------------|---------------------------------------|
+| GCP_PROJECT_ID               | The GCP Project ID                    |
+| GCP_REGION                   | The region that project is in         |
+| GCP_REGISTRY_REPOSITORY_NAME | The artifact registry repository name |
+
+Lastly, GitHub Action "🛸 GCP Cloud Run Deploy" will check out the repository and deploy the cloud run function utilizing
+the same GitHub action mentioned above. The following repository variable needs to be set:
+
+| Secret                                | Description                                                     |
+|---------------------------------------|-----------------------------------------------------------------|
+| GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME | The GCP bucket name, where the model artifact has been uploaded |
+
 
 # References
 
