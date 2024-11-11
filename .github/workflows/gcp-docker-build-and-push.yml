@@ -44,7 +44,7 @@ jobs:
 
       - name: "Build image"
         run: |-
-          echo "${{ secrets.GCP_PREDICTION_SERVICE_ACCOUNT_KEY }}" > gcp_prediction_service_account.json
+          echo "${{ secrets.GCP_PREDICTION_SERVICE_ACCOUNT_KEY_BASE64 }}" | base64 --decode > gcp_prediction_service_account.json
           docker build --build-arg PREDICTION_SERVICE_ACCOUNT_CREDENTIALS=gcp_prediction_service_account.json --tag ${{ env.DOCKER_IMAGE_LOCATION }}:${{ steps.semver-version.outputs.TAG_NAME }}  .
 
       - name: "Push image"
