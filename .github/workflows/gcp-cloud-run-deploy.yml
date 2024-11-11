@@ -1,4 +1,4 @@
-name: "🛸 GCP Cloud Run Deloy"
+name: "🛸 GCP Cloud Run Deploy"
 
 permissions:
   contents: read
@@ -9,8 +9,8 @@ on:
 env:
   PROJECT_ID: "${{ vars.GCP_PROJECT_ID }}"
   REGION: "${{ vars.GCP_REGION }}"
-  REGISTRY_REPOSITORY_NAME: "${{ vars.GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME }}"
-  MLFLOW_MODEL_ARTIFACT_BUCKET_NAME: "${{ vars.GCP_REGISTRY_REPOSITORY_NAME }}"
+  REGISTRY_REPOSITORY_NAME: "${{ vars.GCP_REGISTRY_REPOSITORY_NAME }}"
+  MLFLOW_MODEL_ARTIFACT_BUCKET_NAME: "${{ vars.GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME }}"
   DOCKER_IMAGE_LOCATION: "${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_REGISTRY_REPOSITORY_NAME }}/gcp-cloud-run-function-model-inference"
 
 jobs:
