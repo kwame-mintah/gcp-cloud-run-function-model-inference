@@ -43,7 +43,9 @@ jobs:
         run: echo "TAG_NAME=$(cat VERSION)" >> "$GITHUB_OUTPUT"
 
       - name: "Build image"
-        run: docker build -t ${{ env.DOCKER_IMAGE_LOCATION }}:${{ steps.semver-version.outputs.TAG_NAME }}  .
+        run: |-
+          echo "${{ secrets.GCP_PREDICTION_SERVICE_ACCOUNT_KEY }}" > gcp_prediction_service_account.json
+          docker build --build-arg PREDICTION_SERVICE_ACCOUNT_CREDENTIALS=gcp_prediction_service_account.json --tag ${{ env.DOCKER_IMAGE_LOCATION }}:${{ steps.semver-version.outputs.TAG_NAME }}  .
 
       - name: "Push image"
         run: docker push ${{ env.DOCKER_IMAGE_LOCATION }}:${{ steps.semver-version.outputs.TAG_NAME }}

@@ -16,6 +16,7 @@ RUN pip install --no-build-isolation --no-cache-dir --upgrade -r /code/requireme
 COPY . /code
 
 # Copy the service account credentials with role `roles/storage.objectViewer`
+# TODO: SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data
 ARG PREDICTION_SERVICE_ACCOUNT_CREDENTIALS
 ENV GOOGLE_APPLICATION_CREDENTIALS="/code/${PREDICTION_SERVICE_ACCOUNT_CREDENTIALS}"
 
