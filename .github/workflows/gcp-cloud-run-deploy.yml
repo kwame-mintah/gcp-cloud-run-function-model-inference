@@ -17,6 +17,9 @@ jobs:
   cloud-run-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+
       - name: "Configure GitHub service account"
         id: "auth"
         uses: "google-github-actions/auth@v2.1.7"
