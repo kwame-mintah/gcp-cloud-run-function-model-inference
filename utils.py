@@ -1,4 +1,6 @@
 import logging
+import tempfile
+import time
 from typing import Any
 
 import dill
@@ -44,22 +46,22 @@ def load_object(file_path: str) -> Any:
         raise e
 
 
+@timing_decorator
 def download_blob_and_return_object(
     bucket_name: str = EnvironmentVariables().GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME,
     source_blob_name: str = "model.pkl",
-    destination_file_name: str = "gcp_model.pkl",
 ) -> Any:
     """
     Downloads a blob from the bucket and return serialized object
 
-    :param destination_file_name:
     :param bucket_name: The ID of your GCS bucket
     :param source_blob_name: The ID of your GCS object
     :return: serialized object
     """
-
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(source_blob_name)
-    blob.download_to_filename(destination_file_name)
-    return load_object(destination_file_name)
+    with tempfile.NamedTemporaryFile() as file_location:
+        blob = bucket.blob(source_blob_name)
+        blob.download_to_filename(file_location.file.name)
+        serialized_model = load_object(file_location.file.name)
+    return serialized_model
