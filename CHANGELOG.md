@@ -1,3 +1,13 @@
+## v0.3.0 (2024-11-13)
+
+### Feat
+
+- **timing_decorator**: add decorator to output how long function takes
+
+### Refactor
+
+- **download_blob_and_return_object**: no longer store downloaded model locally
+
 ## v0.2.1 (2024-11-11)
 
 ### Refactor
