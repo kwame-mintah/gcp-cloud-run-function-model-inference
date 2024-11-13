@@ -17,6 +17,17 @@ class EnvironmentVariables(BaseSettings):
     )
 
 
+def timing_decorator(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        logging.info(f"{func.__name__} took {end_time - start_time} seconds to run.")
+        return result
+
+    return wrapper
+
+
 def load_object(file_path: str) -> Any:
     """
     Load file into python and return serialized object.

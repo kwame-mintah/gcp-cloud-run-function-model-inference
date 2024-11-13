@@ -4,9 +4,15 @@ import pandas as pd
 from sklearn.linear_model import ElasticNet
 
 from columns import WineQualityData
-from utils import load_object, EnvironmentVariables, download_blob_and_return_object
+from utils import (
+    load_object,
+    EnvironmentVariables,
+    download_blob_and_return_object,
+    timing_decorator,
+)
 
 
+@timing_decorator
 def predict_wine_quality(wine_list: List[WineQualityData]) -> List[float]:
     """
     Load model artifact from directory and predict with LinearModel
