@@ -12,6 +12,14 @@ FastAPI will be used for the cloud function as it offers many features e.g. auth
 and overall easy to use and maintain. Note all GCP resources are created within this repository, some resources are created
 via Terraform in this repository [terraform-gcp-model-serving](https://github.com/kwame-mintah/terraform-gcp-model-serving).
 
+# Disclaimer
+
+There are many options of serving a model, this project aims to demonstrate one. Each machine learning (ML) project is different
+other options approaches that could be considered and related to this project is the following:
+
+1. Include the model artifact in the docker image, instead of downloading from Google Cloud Platform (GCP) bucket,
+2. Utilizing GCP cloud run volumes and storing the model artifact within a volume and can load the model in memory.
+
 # Architecture
 
 ![proposed-model-inference-architecture](./docs/drawio/cloud-function-model-inference-overview.png)
