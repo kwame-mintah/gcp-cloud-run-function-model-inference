@@ -5,7 +5,8 @@ services:
     image: mlflow_server
     container_name: mlflow_server
     command: >
-      mlflow server --default-artifact-root /mlartifacts
+      mlflow server
+      --default-artifact-root /mlartifacts
       --backend-store-uri postgresql+psycopg2://postgres:postgres@postgres:5432/mlflow_db
       --host 0.0.0.0
       -p 5001
@@ -36,9 +37,10 @@ services:
     image: minio/minio
     container_name: minio_storage
     environment:
-      MINIO_ROOT_USER: mino
-      MINIO_ROOT_PASSWORD: minopassword
-    command: server --console-address ":9001" /data
+      MINIO_ROOT_USER: miniominio
+      MINIO_ROOT_PASSWORD: miniominio
+    command: >
+      server --console-address ":9001" /data
     volumes:
       - minio:/data
     ports:

@@ -18,7 +18,8 @@ There are many options of serving a model, this project aims to demonstrate one.
 other options approaches that could be considered and related to this project is the following:
 
 1. Include the model artifact in the docker image, instead of downloading from Google Cloud Platform (GCP) bucket,
-2. Utilizing GCP cloud run volumes and storing the model artifact within a volume and can load the model in memory.
+2. Utilizing GCP [cloud run volumes](https://cloud.google.com/sdk/gcloud/reference/run/deploy#--add-volume) and storing the model artifact within a volume and can load the model in memory.
+3. Instead of having to upload the model artifact each time, the default artifact root to the [GCP bucket](https://mlflow.org/docs/latest/tracking/artifacts-stores.html#google-cloud-storage)[^1]
 
 # Architecture
 
@@ -145,3 +146,6 @@ the same GitHub action mentioned above. The following repository variable needs 
 # References
 
 1. [How to serve deep learning models using TensorFlow 2.0 with Cloud Functions](https://cloud.google.com/blog/products/ai-machine-learning/how-to-serve-deep-learning-models-using-tensorflow-2-0-with-cloud-functions) by Rustem Feyzkhanov
+
+[^1]: Within the `minio` can run the following command `mc alias set gcs https://storage.googleapis.com <YOUR-ACCESS-KEY> <YOUR-SECRET-KEY>`
+      and check that you can list the contents of the bucket e.g. `mc ls gcs/<YOUR-BUCKET-NAME>`
