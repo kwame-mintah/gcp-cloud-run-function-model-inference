@@ -1,0 +1,36 @@
+name: "🛰️ GCP Cloud Run Delete"
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: "${{ vars.GCP_PROJECT_ID }}"
+  REGION: "${{ vars.GCP_REGION }}"
+
+jobs:
+  cloud-run-delete:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+
+      - name: "Configure GitHub service account"
+        id: "auth"
+        uses: "google-github-actions/auth@v2.1.7"
+        with:
+          credentials_json: "${{ secrets.GCP_GITHUB_SERVICE_ACCOUNT_KEY }}"
+
+      - name: "Set up GCloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2.1.2"
+
+      - name: "Use GCloud CLI"
+        run: "gcloud info"
+
+      - name: "Delete cloud run function"
+        run: |-
+          gcloud run services gcp-cloud-run-function-model-inference \
+            --region ${{ env.REGION }} \
+            --quiet
