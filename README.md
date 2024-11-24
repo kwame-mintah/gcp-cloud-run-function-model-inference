@@ -3,6 +3,7 @@
 [![🚧 Bump version](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/run-version-bump.yml/badge.svg)](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/run-version-bump.yml)
 [![🚀 Push Docker image to GCP Artifact Registry](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/gcp-docker-build-and-push.yml/badge.svg)](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/gcp-docker-build-and-push.yml)
 [![🛸 GCP Cloud Run Deploy](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/gcp-cloud-run-deploy.yml/badge.svg)](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/gcp-cloud-run-deploy.yml)
+[![🛰️ GCP Cloud Run Delete](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/gcp-cloud-run-delete.yml/badge.svg)](https://github.com/kwame-mintah/gcp-cloud-run-function-model-inference/actions/workflows/gcp-cloud-run-delete.yml)
 
 A cloud function to invoke a prediction against a machine learning model that has been trained outside
 a cloud provider, using tools like [MLFlow](https://mlflow.org/). This repository will not contain the model artifact output,
@@ -71,6 +72,7 @@ The following environment variables need to be set before attempting to run the 
 | GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME | The GCP bucket name, where the model artifact has been uploaded             | N/A     | Yes      |
 | USE_LOCAL_FILE_PATH_MODEL             | Use the model artifact found locally, rather than fetching from GCP bucket. | False   | No       |
 
+The following steps below will start the FastAPI service locally:
 
 1. Install python packages used for the service:
 
@@ -135,13 +137,16 @@ Additionally, the following variables need to be set:
 | GCP_REGION                   | The region that project is in         |
 | GCP_REGISTRY_REPOSITORY_NAME | The artifact registry repository name |
 
-Lastly, GitHub Action "🛸 GCP Cloud Run Deploy" will check out the repository and deploy the cloud run function utilizing
+Secondly, GitHub Action "🛸 GCP Cloud Run Deploy" will check out the repository and deploy the cloud run function utilizing
 the same GitHub action mentioned above. The following repository variable needs to be set:
 
 | Secret                                | Description                                                     |
 |---------------------------------------|-----------------------------------------------------------------|
 | GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME | The GCP bucket name, where the model artifact has been uploaded |
 
+
+Lastly, GitHub Action "🛰️ GCP Cloud Run Delete" will check out the repository and delete the cloud run function utilizing
+the same GitHub action mentioned above and repository variables.
 
 # References
 
