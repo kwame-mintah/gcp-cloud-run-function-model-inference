@@ -31,6 +31,6 @@ jobs:
 
       - name: "Delete cloud run function"
         run: |-
-          gcloud run services gcp-cloud-run-function-model-inference \
+          gcloud run services delete gcp-cloud-run-function-model-inference \
             --region ${{ env.REGION }} \
             --quiet
