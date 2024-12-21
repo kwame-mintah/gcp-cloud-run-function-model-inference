@@ -1,0 +1,13 @@
+services:
+  fastapi:
+    image: <!GCP_IMAGE_REGISTRY>
+    platform: "linux/amd64"
+    environment:
+      GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME: <!GCP_BUCKET_NAME>
+    ports:
+      - "8080:8080"
+    networks:
+      - app
+
+networks:
+  app:
