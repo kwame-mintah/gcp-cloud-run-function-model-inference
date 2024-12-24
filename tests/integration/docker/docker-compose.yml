@@ -1,9 +1,12 @@
 services:
   fastapi:
-    image: <!GCP_IMAGE_REGISTRY>
+    build:
+      context: "../../../"
+      args:
+        - PREDICTION_SERVICE_ACCOUNT_CREDENTIALS=gcp_prediction_service_account.json
     platform: "linux/amd64"
     environment:
-      GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME: <!GCP_BUCKET_NAME>
+      GCP_MLFLOW_MODEL_ARTIFACT_BUCKET_NAME: ml-gcp-model-serving-europe-west2-dev-mlflow-bucket
     ports:
       - "8080:8080"
     networks:
