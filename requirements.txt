@@ -7,3 +7,6 @@ dill==0.3.9
 pandas==2.2.2
 scikit-learn==1.5.1
 pydantic-settings==2.6.1
+pytest-bdd>=8.1.0
+pytest-cov>=6.0.0
+testcontainers[google]>=4.9.0
