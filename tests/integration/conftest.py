@@ -6,7 +6,7 @@ from testcontainers.compose import DockerCompose
 docker_compose = DockerCompose(
     context="docker",
     build=True,
-    services=["fastapi"],
+    services=["fastapi", "minio", "mc"],
 )
 
 
