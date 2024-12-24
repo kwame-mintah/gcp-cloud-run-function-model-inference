@@ -13,7 +13,7 @@ integration_tests_base_url = os.getenv(
 
 @scenario(
     feature_name="test_prediction_service.feature",
-    scenario_name="A user should be able to make a prediction",
+    scenario_name="A user should be able to make a wine prediction",
 )
 def test_prediction_service(setup):
     """
