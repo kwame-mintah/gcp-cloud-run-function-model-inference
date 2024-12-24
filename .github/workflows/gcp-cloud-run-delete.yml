@@ -27,7 +27,7 @@ jobs:
         uses: "google-github-actions/setup-gcloud@v2.1.2"
 
       - name: "Use GCloud CLI"
-        run: "gcloud info"
+        run: gcloud info
 
       - name: "Delete cloud run function"
         run: |-
